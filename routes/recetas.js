@@ -16,6 +16,37 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+/**
+ * @swagger
+ * /recetas/nuevaReceta:
+ *   post:
+ *     summary: Crea una nueva receta
+ *     tags: [Recetas]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *               subtitulo:
+ *                 type: string
+ *               pasos:
+ *                 type: string
+ *               ingredientes:
+ *                 type: string
+ *               idcategoria:
+ *                 type: integer
+ *               imagen:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Receta agregada exitosamente
+ */
+
 router.post('/nuevaReceta', upload.single('imagen'), function (req, res, next) {
     const { titulo, subtitulo, pasos, ingredientes, idcategoria } = req.body;
     const imagen = req.file;
@@ -56,6 +87,30 @@ router.post('/nuevaReceta', upload.single('imagen'), function (req, res, next) {
     });
 });
 
+/**
+ * @swagger
+ * /recetas:
+ *   get:
+ *     summary: Obtiene todas las recetas
+ *     tags: [Recetas]
+ *     responses:
+ *       200:
+ *         description: Lista de recetas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la receta
+ *                   nombre:
+ *                     type: string
+ *                     description: Nombre de la receta
+ */
+
 router.get('/', function (req, res, next) {
     const query = `
         SELECT 
@@ -83,6 +138,24 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/**
+ * @swagger
+ * /recetas/{id}:
+ *   get:
+ *     summary: Obtiene una receta por ID
+ *     tags: [Recetas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la receta
+ *     responses:
+ *       200:
+ *         description: Detalles de la receta
+ */
+
 router.get('/:id', function (req, res, next) {
     const idreceta = req.params.id;
 
@@ -99,6 +172,94 @@ router.get('/:id', function (req, res, next) {
         res.json(results[0]);
     });
 });
+
+/**
+ * @swagger
+ * /recetas/{id}:
+ *   put:
+ *     summary: Actualiza una receta existente
+ *     tags: [Recetas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la receta a actualizar
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idreceta:
+ *                 type: integer
+ *                 description: ID de la receta
+ *               titulo:
+ *                 type: string
+ *                 description: Título de la receta
+ *               subtitulo:
+ *                 type: string
+ *                 description: Subtítulo de la receta
+ *               imagen:
+ *                 type: string
+ *                 description: URL de la imagen
+ *               pasos:
+ *                 type: string
+ *                 description: Pasos para preparar la receta
+ *               ingredientes:
+ *                 type: string
+ *                 description: Ingredientes de la receta
+ *               idusuario:
+ *                 type: integer
+ *                 description: ID del usuario que creó la receta
+ *     responses:
+ *       200:
+ *         description: Receta actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Receta actualizada exitosamente"
+ *                 affectedRows:
+ *                   type: integer
+ *                   example: 1
+ *       400:
+ *         description: Solicitud inválida, falta un campo requerido
+ *       500:
+ *         description: Error al actualizar la receta
+ *
+ *   delete:
+ *     summary: Elimina una receta existente
+ *     tags: [Recetas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la receta a eliminar
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Receta eliminada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Receta eliminada exitosamente"
+ *                 affectedRows:
+ *                   type: integer
+ *                   example: 1
+ *       500:
+ *         description: Error al eliminar la receta
+ */
 
 router.put('/:id', function (req, res, next) {
     const { idreceta, titulo, subtitulo, imagen, pasos, ingredientes, idusuario } = req.body;

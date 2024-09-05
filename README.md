@@ -14,7 +14,7 @@ Un foro de recetas donde los usuarios pueden compartir sus recetas favoritas.
 
 ```bash
   npm install 
-  npm start ó npx nodemon
+  npm start ó npx nodemon ./bin/www
 ```
 
 ## Equipo

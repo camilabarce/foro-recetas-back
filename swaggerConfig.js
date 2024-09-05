@@ -9,9 +9,13 @@ const swaggerDefinition = {
 	},
 	servers: [
 		{
-			url: 'http://localhost:3000',
-			description: 'Servidor de desarrollo',
+			url: 'https://foro-recetas.up.railway.app/',
+			description: 'Servidor de desarrollo en Railway',
 		},
+		{
+			url: 'http://localhost:3000/',
+			description: 'Servidor de desarrollo local',
+		}
 	],
 	tags: [
 		{

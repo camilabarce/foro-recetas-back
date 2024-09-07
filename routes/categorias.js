@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const connection = require("./../db-connection")
+const { executeQuery } = require('./../database/executeQuery');
 
 /**
  * @swagger
@@ -26,14 +26,14 @@ const connection = require("./../db-connection")
  *                     description: Nombre de la categoría
  */
 
-router.get('/', function (req, res, next) {
-    connection.query('SELECT * FROM categorias', function (error, results, fields) {
-        if (error) {
-            console.error('Error al obtener las categorias:', error);
-            return res.status(500).json({ error: 'Error al obtener las categorias' });
-        }
+router.get('/', async (req, res) => {
+    try {
+        const results = await executeQuery('SELECT * FROM categorias');
         res.json(results);
-    });
+    } catch (error) {
+        console.error('Error al obtener las categorias:', error);
+        res.status(500).json({ error: 'Error al obtener las categorias' });
+    }
 });
 
 module.exports = router;
